@@ -21,7 +21,13 @@ const ContactSchema = new Schema({
         minLength: 4
     },
     profilePicture: {
-        type: String
+        type: String,
+        trim: true
+    },
+    owner: {
+        type: String,
+        required: [true, "Owner is required"],
+        trim: true
     }
 }, { timestamps: true })
 

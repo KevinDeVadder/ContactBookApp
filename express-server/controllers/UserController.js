@@ -16,7 +16,6 @@ module.exports = {
             res.send(user) 
         }
         catch(err){
-
             //Log Error and send it to middleware
             //TODO: Add more expressive errors
             console.log(err)
@@ -55,7 +54,6 @@ module.exports = {
             }
         }
         catch(err){
-
             //Log Error and send it to middleware
             //TODO: Add more expressive errors
             console.log(err)
