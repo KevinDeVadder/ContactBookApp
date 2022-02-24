@@ -8,7 +8,7 @@ module.exports = {
             const contacts = await ContactModel.find({owner: req.body.userId})
 
             //Send Contacts JSON
-            res.send(locations)
+            res.send(contacts)
         }
         catch(err){
             //Log Error and send it to middleware
@@ -18,7 +18,19 @@ module.exports = {
         }
     },
     async getOne(req, res, next){
+        try{
+            //Get one Contact with owner
+            const contact = await ContactModel.findOne({_id: req.params.contactId, owner: req.body.userId})
 
+            //Send Contact JSON
+            res.send(contact)
+        }
+        catch(err){
+            //Log Error and send it to middleware
+            //TODO: Add more expressive errors
+            console.log(err)
+            next(err)
+        }
     },
     async addOne(req, res, next){
 
