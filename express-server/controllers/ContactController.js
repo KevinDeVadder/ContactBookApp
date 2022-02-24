@@ -39,6 +39,18 @@ module.exports = {
 
     },
     async deleteOne(req, res, next){
+        try{
+            //Delete one Contact with owner
+            const contact = await ContactModel.findByIdAndDelete({_id: req.params.contactId, owner: req.body.userId})
 
+            //Send deleted Contact JSON
+            res.send(contact)
+        }
+        catch(err){
+            //Log Error and send it to middleware
+            //TODO: Add more expressive errors
+            console.log(err)
+            next(err)
+        }
     }
 }

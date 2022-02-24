@@ -1,4 +1,5 @@
-var jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
+const joi = require('joi')
 
 module.exports = {
     //User Validation middleware
@@ -14,5 +15,8 @@ module.exports = {
                 next();
             }
         });
+    },
+    validateContact(req, res, next){
+        return 
     }
 }

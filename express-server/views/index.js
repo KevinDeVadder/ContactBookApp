@@ -15,6 +15,7 @@ router.post('/authenticate', userController.authenticate)
 //Contact Related Routes
 router.get('/contacts', validators.validateUser, contactController.getAll)
 router.get('/contact/:contactId', validators.validateUser, contactController.getOne)
+router.delete('/contact/:id', validators.validateUser, contactController.deleteOne)
 
 //Export Router
 module.exports = router
