@@ -201,7 +201,7 @@ describe('Contacts API', () => {
             profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
         }).set('Cookie', [`token=${cookie}`]).expect(400) 
     })
-    it('Edit contact', () => {
+    it('Edit contact --> 200', () => {
         //Try to PUT a contact with cookie gotten from Login
         return request(app).put(`/api/v1/contact/${contactId}`).send({
             name: 'KevinNew'
@@ -218,19 +218,31 @@ describe('Contacts API', () => {
             )
         })    
     })
-    it('Edit contact with bad email', () => {
+    it('Edit contact with bad email --> 400', () => {
         //Try to PUT a contact with bad email with cookie gotten from Login
         return request(app).put(`/api/v1/contact/${contactId}`).send({
             email: 'test'
         }).set('Cookie', [`token=${cookie}`]).expect(400)
     })
-    it('Edit contact with bad phoneNumber', () => {
+    it('Edit contact with bad phoneNumber --> 400', () => {
         //Try to PUT a contact with bad phoneNumber with cookie gotten from Login
         return request(app).put(`/api/v1/contact/${contactId}`).send({
             phoneNumber: '40722222222'
         }).set('Cookie', [`token=${cookie}`]).expect(400)
     })
-    it('Delete contact', () => {
+    it('Edit contact with email that already exists --> 400', () => {
+        //Try to PUT a contact with bad email with cookie gotten from Login
+        return request(app).put(`/api/v1/contact/${contactId}`).send({
+            email: 'test@test.ro'
+        }).set('Cookie', [`token=${cookie}`]).expect(400)
+    })
+    it('Edit contact with phoneNumber that already exists --> 400', () => {
+        //Try to PUT a contact with bad phoneNumber with cookie gotten from Login
+        return request(app).put(`/api/v1/contact/${contactId}`).send({
+            phoneNumber: '+40744444444'
+        }).set('Cookie', [`token=${cookie}`]).expect(400)
+    })
+    it('Delete contact --> 200', () => {
         //Try to DELETE a contact with cookie gotten from Login
         return request(app).delete(`/api/v1/contact/${contactId}`).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
             //Test if response contains deleted Contact
