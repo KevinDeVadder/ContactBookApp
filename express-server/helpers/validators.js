@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
-const joi = require('joi')
+const joi = require('joi');
+const Joi = require('joi');
 
 module.exports = {
     //User Validation middleware
@@ -17,6 +18,11 @@ module.exports = {
         });
     },
     validateContact(req, res, next){
-        return 
+        return joi.object({
+            name: joi.string().required(),
+            email: Joi.string().required(),
+            phoneNumber: Joi.string().regex().required(),
+            profilePicture: joi.string().required()
+        })
     }
 }
