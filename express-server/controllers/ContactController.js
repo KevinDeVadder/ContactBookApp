@@ -89,16 +89,25 @@ module.exports = {
     },
     async editOne(req, res, next){
         try{
-            //Update Contact
-            const contact = await ContactModel.findOneAndUpdate({_id: req.params.contactId, owner: req.body.userId}, req.body, {new: true, runValidators: true})
-            
-            //Check if contact existed already
-            if(!contact){
-                res.status(404).send({error: "Contact not found"})
+            //Check if Contact phoneNumber/email already exist
+            const contact = await ContactModel.findOne({owner: req.body.userId, $or: [{email: req.body.email}, {phoneNumber: req.body.phoneNumber}], $not: [{_id: req.params.contactId}]})
+
+            //If it already exists, send 400
+            if(contact){
+                res.status(400).send({error: "This contact already exists"})
             }
             else{
-                //Send updated Contact JSON
-                res.send({name: contact.name, email: contact.email, phoneNumber: contact.phoneNumber, profilePicture: contact.profilePicture, _id: contact._id})
+                //Update Contact
+                const contact = await ContactModel.findOneAndUpdate({_id: req.params.contactId, owner: req.body.userId}, req.body, {new: true, runValidators: true})
+                
+                //Check if contact existed already
+                if(!contact){
+                    res.status(404).send({error: "Contact not found"})
+                }
+                else{
+                    //Send updated Contact JSON
+                    res.send({name: contact.name, email: contact.email, phoneNumber: contact.phoneNumber, profilePicture: contact.profilePicture, _id: contact._id})
+                }
             }
         }
         catch(err){
