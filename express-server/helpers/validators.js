@@ -33,5 +33,20 @@ module.exports = {
         else{
             res.status(400).send({error: "Invalid data"})
         }
+    },
+    validateUpdatingContact(req, res, next){
+        const schema = joi.object({
+            name: joi.string(),
+            email: joi.string().min(5).email(),
+            phoneNumber: joi.string().min(4).max(14).length(10).pattern(regexPhoneNumberPattern),
+            profilePicture: joi.string()
+        })
+
+        if(schema.validate(req.body)){
+            next()
+        }
+        else{
+            res.status(400).send({error: "Invalid data"})
+        }
     }
 }
