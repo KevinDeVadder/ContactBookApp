@@ -226,6 +226,23 @@ describe('Contacts API', () => {
             phoneNumber: '40722222222'
         }).set('Cookie', [`token=${cookie}`]).expect(400)
     })
-    it('Delete contact', () => {})
-    it('Delete contact that does not exist --> 404', () => {})
+    it('Delete contact', () => {
+        //Try to DELETE a contact with cookie gotten from Login
+        return request(app).delete(`/api/v1/contact/${contactId}`).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
+            //Test if response contains deleted Contact
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    _id: expect.any(String),
+                    name: 'KevinNew',
+                    email: 'test@test.tt',
+                    phoneNumber: '+40722222222',
+                    profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+                })
+            )
+        })    
+    })
+    it('Delete contact that does not exist --> 404', () => {
+        //Try to DELETE a non-existant contact with cookie gotten from Login
+        return request(app).delete(`/api/v1/contact/124df`).set('Cookie', [`token=${cookie}`]).expect(400)
+    })
 })
