@@ -7,6 +7,7 @@ const contactController = require('../controllers/ContactController')
 
 //Require Middleware
 const validators = require('../helpers/validators')
+const useMulter = require('../helpers/multerConfig')
 
 //User Related Routes
 router.post('/register', userController.create)
