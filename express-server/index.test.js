@@ -26,6 +26,14 @@ describe('Users API', () => {
             )
         })
     })
+    it('User exists in the Database --> 400', async () => {
+        //Try to create user
+        return request(app).post('/api/v1/register').send({
+            name: 'John Doe',
+            email: 'test@test.com',
+            password: 'as12345678'
+        }).expect(400)
+    })
     it('Login User --> 200', () => {
         //Try to login
         return request(app).post('/api/v1/authenticate').send({
