@@ -34,12 +34,11 @@ module.exports = {
     },
     async addOne(req, res, next){
         try{
-            console.log(req.body)
             //Check if contact already exists
             const contact = await ContactModel.findOne({owner: req.body.userId, $or: [{email: req.body.email}, {phoneNumber: req.body.phoneNumber}]})
             if(!contact){
                 //If no profile picture
-                if(!req.files){
+                if(!req.files && !req.body.profilePicture){
                     const newContact = await ContactModel.create({
                         name: req.body.name,
                         email: req.body.email,
@@ -47,18 +46,29 @@ module.exports = {
                         owner: req.body.userId
                     })
                     //Send Contact JSON
-                    res.send({name: newContact.name, email: newContact.email, phone: newContact.phone})
+                    res.send({name: newContact.name, email: newContact.email, phoneNumber: newContact.phoneNumber, _id: newContact._id})
+                }
+                else if(req.body.profilePicture && !req.files){
+                    const newContact = await ContactModel.create({
+                        name: req.body.name,
+                        email: req.body.email,
+                        phoneNumber: req.body.phoneNumber,
+                        profilePicture: req.body.profilePicture,
+                        owner: req.body.userId
+                    })
+                    //Send Contact JSON
+                    res.send({name: newContact.name, email: newContact.email, phoneNumber: newContact.phoneNumber, profilePicture: newContact.profilePicture, _id: newContact._id})
                 }
                 else{
                     const newContact = await ContactModel.create({
                         name: req.body.name,
                         email: req.body.email,
                         phoneNumber: req.body.phoneNumber,
-                        profilePicture: req.files[0].fileName || undefined,
+                        profilePicture: req.files[0].fileName,
                         owner: req.body.userId
                     })
                     //Send Contact JSON
-                    res.send({name: newContact.name, email: newContact.email, phone: newContact.phone, profilePicture: newContact.profilePicture})
+                    res.send({name: newContact.name, email: newContact.email, phoneNumber: newContact.phoneNumber, profilePicture: newContact.profilePicture, _id: newContact._id})
                 }
             }
             else{

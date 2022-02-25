@@ -94,15 +94,14 @@ describe('Contacts API', () => {
             profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
         }).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
             //Test if response contains Contact
-            expect(response.body).toEqual(
-                expect.objectContaining({
-                    _id: expect.any(String),
-                    name: 'Kevin',
-                    email: 'test@test.tt',
-                    phoneNumber: '+40722222222',
-                    profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
-                })
-            )
+            console.log(response.body)
+            expect(response.body).toMatchObject({
+                _id: expect.any(String),
+                name: 'Kevin',
+                email: 'test@test.tt',
+                phoneNumber: '+40722222222',
+                profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+            })
         })        
     })
     it('Add one contact of user but with missing profile picture --> 200', () => {
@@ -113,14 +112,12 @@ describe('Contacts API', () => {
             phoneNumber: '+40744444444',
         }).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
             //Test if response contains Contact
-            expect(response.body).toEqual(
-                expect.objectContaining({
-                    _id: expect.any(String),
-                    name: 'Kevin',
-                    email: 'test@test.tt',
-                    phoneNumber: '+40744444444'
-                })
-            )
+            expect(response.body).toMatchObject({
+                _id: expect.any(String),
+                name: 'Kevin',
+                email: 'test@test.ttt',
+                phoneNumber: '+40744444444'
+            })
         }) 
     })
     it('List all Contacts of user --> 200', () => {
