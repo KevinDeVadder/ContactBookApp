@@ -20,11 +20,18 @@ module.exports = {
         });
     },
     validateCreatingContact(req, res, next){
-        return joi.object({
+        const schema = joi.object({
             name: joi.string().required(),
-            email: Joi.email().required(),
-            phoneNumber: Joi.string().min(4).max(14).length(10).pattern(regexPhoneNumberPattern).required(),
+            email: joi.string().min(5).required().email(),
+            phoneNumber: joi.string().min(4).max(14).length(10).pattern(regexPhoneNumberPattern).required(),
             profilePicture: joi.string()
         })
+
+        if(schema.validate(req.body)){
+            next()
+        }
+        else{
+            res.status(400).send({error: "Invalid data"})
+        }
     }
 }
