@@ -7,7 +7,7 @@ let cookie
 let contactId
 
 describe('Users API', () => {
-    it('Create User in the Database', async () => {
+    it('Create User in the Database --> 200', async () => {
         //Delete all previous users
         await UserModel.deleteMany()
         
@@ -26,7 +26,7 @@ describe('Users API', () => {
             )
         })
     })
-    it('Login User', () => {
+    it('Login User --> 200', () => {
         //Try to login
         return request(app).post('/api/v1/authenticate').send({
             email: 'test@test.com',
@@ -64,7 +64,7 @@ describe('Contacts API', () => {
         //Try to request Contacts and expect 404
         return request(app).get('/api/v1/contacts').expect(403) 
     })
-    it('Login User', () => {
+    it('Login User --> 200', () => {
         //Try to login
         return request(app).post('/api/v1/authenticate').send({
             email: 'test@test.com',
@@ -85,7 +85,7 @@ describe('Contacts API', () => {
             expect( response.get('Set-Cookie') ).toBeDefined()
         })
     })
-    it('Add one contact of user', () => {
+    it('Add one contact of user --> 200', () => {
         //Try to POST a contact with cookie gotten from Login
         return request(app).post('/api/v1/contacts').send({
             name: 'Kevin',
@@ -105,7 +105,25 @@ describe('Contacts API', () => {
             )
         })        
     })
-    it('List all Contacts of user', () => {
+    it('Add one contact of user but with missing profile picture --> 200', () => {
+        //Try to POST a contact with no profile picture (since it's optional) with cookie gotten from Login
+        return request(app).post('/api/v1/contacts').send({
+            name: 'Kevin',
+            email: 'test@test.ttt',
+            phoneNumber: '+40744444444',
+        }).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
+            //Test if response contains Contact
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    _id: expect.any(String),
+                    name: 'Kevin',
+                    email: 'test@test.tt',
+                    phoneNumber: '+40744444444'
+                })
+            )
+        }) 
+    })
+    it('List all Contacts of user --> 200', () => {
         //Try to GET a contact with cookie gotten from Login
         return request(app).get('/api/v1/contacts').set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
             //Set contactID
@@ -125,7 +143,7 @@ describe('Contacts API', () => {
             )
         })     
     })
-    it('See one contact of user', () => {
+    it('See one contact of user --> 200', () => {
         //Try to GET a contact with cookie gotten from Login
         return request(app).get(`/api/v1/contact/${contactId}`).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
             //Test if response contains contact
@@ -140,10 +158,36 @@ describe('Contacts API', () => {
             )
         })
     })
-    it('See one contact of user that does not exist --> 404', () => {})
-    it('Add one contact of user that already exists', () => {})
-    it('Add one contact of user but with missing data', () => {})
-    it('Add one contact of user but with wrong data', () => {})
+    it('See one contact of user that does not exist --> 404', () => {
+        //Try to GET a non-existant contact with cookie gotten from Login and expect 404
+        return request(app).get(`/api/v1/contact/12a3`).set('Cookie', [`token=${cookie}`]).expect(404)
+    })
+    it('Add one contact of user that already exists --> 400', () => {
+        //Try to POST a contact that already exists with cookie gotten from Login and expect 400
+        return request(app).post('/api/v1/contacts').send({
+            name: 'Kevin',
+            email: 'test@test.tt',
+            phoneNumber: '+40722222222',
+            profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+        }).set('Cookie', [`token=${cookie}`]).expect(400) 
+    })
+    it('Add one contact of user but with missing data -> 400', () => {
+        //Try to POST a contact with missing data with cookie gotten from Login and expect 400
+        return request(app).post('/api/v1/contacts').send({
+            email: 'test@test.tt',
+            phoneNumber: '+40711111111',
+            profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+        }).set('Cookie', [`token=${cookie}`]).expect(400) 
+    })
+    it('Add one contact of user but with wrong data --> 400', () => {
+        //Try to POST a contact with wrong email with cookie gotten from Login and expect 400
+        return request(app).post('/api/v1/contacts').send({
+            name: 'Kevin',
+            email: 'test',
+            phoneNumber: '+40722222222',
+            profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+        }).set('Cookie', [`token=${cookie}`]).expect(400) 
+    })
     it('Edit contact', () => {})
     it('Edit contact with bad name', () => {})
     it('Edit contact with bad email', () => {})
