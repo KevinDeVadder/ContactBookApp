@@ -23,11 +23,14 @@ module.exports = {
         const schema = joi.object({
             name: joi.string().required(),
             email: joi.string().min(5).required().email(),
-            phoneNumber: joi.string().min(4).max(14).length(10).pattern(regexPhoneNumberPattern).required(),
-            profilePicture: joi.string()
+            phoneNumber: joi.string().min(4).max(14).pattern(regexPhoneNumberPattern).required(),
+            profilePicture: joi.string(),
+            userId: joi.string()
         })
+        //Validate if body is valid
+        const { error } = schema.validate(req.body);
 
-        if(schema.validate(req.body)){
+        if(!error){
             next()
         }
         else{
@@ -38,11 +41,14 @@ module.exports = {
         const schema = joi.object({
             name: joi.string(),
             email: joi.string().min(5).email(),
-            phoneNumber: joi.string().min(4).max(14).length(10).pattern(regexPhoneNumberPattern),
-            profilePicture: joi.string()
+            phoneNumber: joi.string().min(4).max(14).pattern(regexPhoneNumberPattern),
+            profilePicture: joi.string(),
+            userId: joi.string()
         })
-
-        if(schema.validate(req.body)){
+        
+        //Validate if body is valid
+        const { error } = schema.validate(req.body);
+        if(!error){
             next()
         }
         else{

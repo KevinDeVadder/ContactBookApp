@@ -107,14 +107,14 @@ describe('Contacts API', () => {
         //Try to POST a contact with no profile picture (since it's optional) with cookie gotten from Login
         return request(app).post('/api/v1/contacts').send({
             name: 'Kevin',
-            email: 'test@test.ttt',
+            email: 'test@test.ro',
             phoneNumber: '+40744444444',
         }).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
             //Test if response contains Contact
             expect(response.body).toMatchObject({
                 _id: expect.any(String),
                 name: 'Kevin',
-                email: 'test@test.ttt',
+                email: 'test@test.ro',
                 phoneNumber: '+40744444444'
             })
         }) 

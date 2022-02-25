@@ -88,7 +88,25 @@ module.exports = {
         }
     },
     async editOne(req, res, next){
-
+        try{
+            //Update Contact
+            const contact = await ContactModel.findOneAndUpdate({_id: req.params.contactId, owner: req.body.userId}, req.body, {new: true, runValidators: true})
+            
+            //Check if contact existed already
+            if(!contact){
+                res.status(404).send({error: "Contact not found"})
+            }
+            else{
+                //Send updated Contact JSON
+                res.send({name: contact.name, email: contact.email, phoneNumber: contact.phoneNumber, profilePicture: contact.profilePicture, _id: contact._id})
+            }
+        }
+        catch(err){
+            //Log Error and send it to middleware
+            //TODO: Add more expressive errors
+            console.log(err)
+            next(err)
+        }     
     },
     async deleteOne(req, res, next){
         try{
