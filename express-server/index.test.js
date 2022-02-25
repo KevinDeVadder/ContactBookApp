@@ -179,7 +179,7 @@ describe('Contacts API', () => {
             profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
         }).set('Cookie', [`token=${cookie}`]).expect(400) 
     })
-    it('Add one contact of user but with wrong data --> 400', () => {
+    it('Add one contact of user but with wrong email --> 400', () => {
         //Try to POST a contact with wrong email with cookie gotten from Login and expect 400
         return request(app).post('/api/v1/contacts').send({
             name: 'Kevin',
@@ -188,11 +188,44 @@ describe('Contacts API', () => {
             profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
         }).set('Cookie', [`token=${cookie}`]).expect(400) 
     })
-    it('Edit contact', () => {})
-    it('Edit contact with bad name', () => {})
-    it('Edit contact with bad email', () => {})
-    it('Edit contact with bad phoneNumber', () => {})
-    it('Edit contact with bad profilePicture', () => {})
+    it('Add one contact of user but with wrong phoneNumber --> 400', () => {
+        //Try to POST a contact with wrong email with cookie gotten from Login and expect 400
+        return request(app).post('/api/v1/contacts').send({
+            name: 'Kevin',
+            email: 'test@test.tt',
+            phoneNumber: '40722222222',
+            profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+        }).set('Cookie', [`token=${cookie}`]).expect(400) 
+    })
+    it('Edit contact', () => {
+        //Try to PUT a contact with cookie gotten from Login
+        return request(app).put(`/api/v1/contact/${contactId}`).send({
+            name: 'KevinNew'
+        }).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
+            //Test if response contains modified Contact
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    _id: expect.any(String),
+                    name: 'KevinNew',
+                    email: 'test@test.tt',
+                    phoneNumber: '+40722222222',
+                    profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+                })
+            )
+        })    
+    })
+    it('Edit contact with bad email', () => {
+        //Try to PUT a contact with bad email with cookie gotten from Login
+        return request(app).put(`/api/v1/contact/${contactId}`).send({
+            email: 'test'
+        }).set('Cookie', [`token=${cookie}`]).expect(400)
+    })
+    it('Edit contact with bad phoneNumber', () => {
+        //Try to PUT a contact with bad phoneNumber with cookie gotten from Login
+        return request(app).put(`/api/v1/contact/${contactId}`).send({
+            phoneNumber: '40722222222'
+        }).set('Cookie', [`token=${cookie}`]).expect(400)
+    })
     it('Delete contact', () => {})
     it('Delete contact that does not exist --> 404', () => {})
 })
