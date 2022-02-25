@@ -33,6 +33,9 @@ try{
 //Set JWT Secret Key
 app.set('secretKey', process.env.SECRET)
 
+//Set Node Env
+app.set('nodeEnv', process.env.NODE_ENV)
+
 //Init CORS Package
 app.use(cors())
 
@@ -57,6 +60,10 @@ app.use((err, req, res, next) => {
 })
 
 //Start Express App
-var port = 5000
-app.listen(port)
+var port = 5050
+if(app.get('nodeEnv') !== 'test'){
+  app.listen(port)
+}
 console.log('server started '+ port)
+
+module.exports = app

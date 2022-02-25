@@ -10,7 +10,7 @@ module.exports = {
             let password = bcrypt.hashSync(req.body.password, 100)
 
             //Create User in DB
-            const user = await UserModel.create({ name: req.body.name, email: req.body.email, password: password, confirmed: true})    
+            const user = await UserModel.create({ name: req.body.name, email: req.body.email, password: password})    
 
             //Send User JSON
             res.send(user) 
@@ -42,7 +42,7 @@ module.exports = {
                 const accessToken = jwt.sign({id: user._id}, req.app.get('secretKey'), { expiresIn: '1h' })
                 
                 //Send the Token over a HTTPSonly Cookie
-                res.cookie("token", accessToken, {secure: true, httpOnly: true})
+                res.cookie("token", accessToken, {secure: req.app.get('nodeEnv') === 'production', httpOnly: true})
 
                 //Send JSON payload
                 res.send(toSend)
