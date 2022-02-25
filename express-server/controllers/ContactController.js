@@ -21,9 +21,14 @@ module.exports = {
         try{
             //Get one Contact with owner
             const contact = await ContactModel.findOne({_id: req.params.contactId, owner: req.body.userId})
-
-            //Send Contact JSON
-            res.send(contact)
+            //Send 404 if Contact does not exist
+            if(!contact){
+                res.status(404).send({error: "Contact not found"})
+            }
+            else{
+                //Send Contact JSON
+                res.send(contact)
+            }
         }
         catch(err){
             //Log Error and send it to middleware
@@ -90,8 +95,14 @@ module.exports = {
             //Delete one Contact with owner
             const contact = await ContactModel.findByIdAndDelete({_id: req.params.contactId, owner: req.body.userId})
 
-            //Send deleted Contact JSON
-            res.send(contact)
+            //Send 404 if Contact does not exist
+            if(!contact){
+                res.status(404).send({error: "Contact not found"})
+            }
+            else{
+                //Send deleted Contact JSON
+                res.send({name: contact.name, email: contact.email, phoneNumber: contact.phoneNumber, profilePicture: contact.profilePicture, _id: contact._id})
+            }
         }
         catch(err){
             //Log Error and send it to middleware

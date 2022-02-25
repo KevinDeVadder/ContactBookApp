@@ -94,7 +94,6 @@ describe('Contacts API', () => {
             profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
         }).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
             //Test if response contains Contact
-            console.log(response.body)
             expect(response.body).toMatchObject({
                 _id: expect.any(String),
                 name: 'Kevin',
@@ -157,7 +156,7 @@ describe('Contacts API', () => {
     })
     it('See one contact of user that does not exist --> 404', () => {
         //Try to GET a non-existant contact with cookie gotten from Login and expect 404
-        return request(app).get(`/api/v1/contact/12a3`).set('Cookie', [`token=${cookie}`]).expect(404)
+        return request(app).get(`/api/v1/contact/111111111111111111111111`).set('Cookie', [`token=${cookie}`]).expect(404)
     })
     it('Add one contact of user that already exists --> 400', () => {
         //Try to POST a contact that already exists with cookie gotten from Login and expect 400
@@ -227,19 +226,17 @@ describe('Contacts API', () => {
         //Try to DELETE a contact with cookie gotten from Login
         return request(app).delete(`/api/v1/contact/${contactId}`).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
             //Test if response contains deleted Contact
-            expect(response.body).toEqual(
-                expect.objectContaining({
-                    _id: expect.any(String),
-                    name: 'KevinNew',
-                    email: 'test@test.tt',
-                    phoneNumber: '+40722222222',
-                    profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
-                })
-            )
+            expect(response.body).toMatchObject({
+                _id: expect.any(String),
+                name: 'KevinNew',
+                email: 'test@test.tt',
+                phoneNumber: '+40722222222',
+                profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+            })
         })    
     })
     it('Delete contact that does not exist --> 404', () => {
         //Try to DELETE a non-existant contact with cookie gotten from Login
-        return request(app).delete(`/api/v1/contact/124df`).set('Cookie', [`token=${cookie}`]).expect(400)
+        return request(app).delete(`/api/v1/contact/111111111111111111111111`).set('Cookie', [`token=${cookie}`]).expect(404)
     })
 })
