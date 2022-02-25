@@ -2,6 +2,10 @@ const request = require('supertest')
 const app = require('./index')
 const UserModel = require('./models/User')
 
+//Set cookie and contactId for persisted testing
+let cookie
+let contactId
+
 describe('Users API', () => {
     it('Create User in the Database', async () => {
         //Delete all previous users
@@ -66,6 +70,10 @@ describe('Contacts API', () => {
             email: 'test@test.com',
             password: 'as12345678'
         }).expect(200).then((response) => {
+            //Set cookie for future requests
+            const cookies = response.headers['set-cookie'][0].split(';')[0]
+            cookie = cookies.split('=')[1]
+
             //Test if response contains name and email
             expect(response.body).toEqual(
                 expect.objectContaining({
@@ -78,28 +86,60 @@ describe('Contacts API', () => {
         })
     })
     it('Add one contact of user', () => {
-        //Try to login
+        //Try to POST a contact with cookie gotten from Login
         return request(app).post('/api/v1/contacts').send({
             name: 'Kevin',
             email: 'test@test.tt',
             phoneNumber: '+40722222222',
             profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
-        }).expect(200).then((response) => {
-            //Test if response contains name and email
+        }).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
+            //Test if response contains Contact
             expect(response.body).toEqual(
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        name: 'Kevin',
-                        email: 'test@test.tt',
-                        phoneNumber: '+40722222222',
-                        profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
-                    })
-                ])
+                expect.objectContaining({
+                    _id: expect.any(String),
+                    name: 'Kevin',
+                    email: 'test@test.tt',
+                    phoneNumber: '+40722222222',
+                    profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+                })
             )
         })        
     })
-    it('List all Contacts of user', () => {})
-    it('See one contact of user', () => {})
+    it('List all Contacts of user', () => {
+        //Try to GET a contact with cookie gotten from Login
+        return request(app).get('/api/v1/contacts').set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
+            //Set contactID
+            contactId = response.body[0]._id
+            
+            //Test if response contains array of Contacts
+            expect(response.body).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        _id: expect.any(String),
+                        name: expect.any(String),
+                        email: expect.any(String),
+                        phoneNumber: expect.any(String),
+                        profilePicture: expect.any(String)
+                    })
+                ])
+            )
+        })     
+    })
+    it('See one contact of user', () => {
+        //Try to GET a contact with cookie gotten from Login
+        return request(app).get(`/api/v1/contact/${contactId}`).set('Cookie', [`token=${cookie}`]).expect(200).then((response) => {
+            //Test if response contains contact
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    _id: expect.any(String),
+                    name: expect.any(String),
+                    email: expect.any(String),
+                    phoneNumber: expect.any(String),
+                    profilePicture: expect.any(String)
+                })
+            )
+        })
+    })
     it('See one contact of user that does not exist --> 404', () => {})
     it('Add one contact of user that already exists', () => {})
     it('Add one contact of user but with missing data', () => {})
