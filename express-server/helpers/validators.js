@@ -9,7 +9,7 @@ module.exports = {
         jwt.verify(req.cookies.token, req.app.get('secretKey'), function (err, decoded) {
             if (err) {
                 //If Validation failed, send error
-                res.status(400).json({ status: "error", message: err.message, data: null });
+                res.status(403).json({ status: "error", message: err.message, data: null });
             } else {
                 // Add User ID to request
                 req.body.userId = decoded.id;

@@ -56,7 +56,10 @@ describe('Users API', () => {
 })
 
 describe('Contacts API', () => {
-    it('List all Contacts of user with no login --> 403', () => {})
+    it('List all Contacts of user with no login --> 403', () => {
+        //Try to request Contacts and expect 404
+        return request(app).get('/api/v1/contacts').expect(403) 
+    })
     it('Login User', () => {
         //Try to login
         return request(app).post('/api/v1/authenticate').send({
@@ -74,7 +77,27 @@ describe('Contacts API', () => {
             expect( response.get('Set-Cookie') ).toBeDefined()
         })
     })
-    it('Add one contact of user', () => {})
+    it('Add one contact of user', () => {
+        //Try to login
+        return request(app).post('/api/v1/contacts').send({
+            name: 'Kevin',
+            email: 'test@test.tt',
+            phoneNumber: '+40722222222',
+            profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+        }).expect(200).then((response) => {
+            //Test if response contains name and email
+            expect(response.body).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        name: 'Kevin',
+                        email: 'test@test.tt',
+                        phoneNumber: '+40722222222',
+                        profilePicture: 'https://images.unsplash.com/photo-1615789591457-74a63395c990'
+                    })
+                ])
+            )
+        })        
+    })
     it('List all Contacts of user', () => {})
     it('See one contact of user', () => {})
     it('See one contact of user that does not exist --> 404', () => {})
