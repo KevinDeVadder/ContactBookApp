@@ -24,10 +24,10 @@
 
 <script>
 export default {
-    data(){
-        return{
-            isUserLoggedIn: false
+    computed: {
+        isUserLoggedIn(){
+            return this.$store.state.isUserLoggedIn
         }
-    }
+    },
 }
 </script>
