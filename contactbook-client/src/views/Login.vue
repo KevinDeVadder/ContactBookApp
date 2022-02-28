@@ -1,11 +1,13 @@
 <template>
-    
+    <login-form/>
 </template>
 
 <script>
-import appHeader from '@/components/authentication/FormLayout'
+import LoginForm from '@/components/forms/LoginForm'
 
 export default {
-    
+    components: {
+        LoginForm
+    }
 }
 </script>
