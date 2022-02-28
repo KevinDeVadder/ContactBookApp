@@ -12,22 +12,22 @@
             <v-text-field
                 ref="email"
                 v-model="email"
-                :rules="[() => !!email || 'This field is required']"
+                :rules="emailValidatorRules"
                 label="Email"
                 placeholder="basicemail@gmail.com"
                 required
+                color="purple"
             ></v-text-field>
             <!-- Password Field -->
             <v-text-field
                 ref="password"
                 v-model="password"
                 :type="'password'"
-                :rules="[
-                () => !!password || 'This field is required'
-                ]"
+                :rules="passwordValidatorRules"
                 label="Password"
                 placeholder="Password"
                 required
+                color="purple"
             ></v-text-field>
         </template>
         
@@ -48,7 +48,14 @@ export default {
     data(){
         return{
             email: '',
-            password: ''
+            password: '',
+            emailValidatorRules: [
+                v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid',
+                () => !!this.email || 'This field is required'
+            ],
+            passwordValidatorRules: [
+                () => !!this.password || 'This field is required'
+            ],
         }
     },
     methods: {
