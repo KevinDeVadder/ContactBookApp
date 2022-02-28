@@ -4,7 +4,7 @@
         <!-- Grid for the Login and Register Forms  -->
         <v-row align="center" justify="center">
             <!-- Form -->
-            <v-card :width="width" :height="height" ref="form" class="pa-5">
+            <v-card :width="width" :height="height" class="pa-5">
                 <!-- Card title -->
                 <v-card-title class="purple--text">
                     <slot name="title"></slot>
